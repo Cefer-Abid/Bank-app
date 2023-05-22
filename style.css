@@ -14,7 +14,7 @@ body {
 
 .container {
   padding: 2rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   Header   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -81,10 +81,8 @@ body {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   App    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 .app {
-  /* max-width: 100rem; */
-  width: 1000px;
+  max-width: 100rem;
   margin: 4rem auto;
-  /* height: 100vh; */
 
   display: grid;
   grid-template-columns: 4fr 3fr;
