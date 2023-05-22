@@ -13,14 +13,14 @@
 
     <title>Bank app</title>
     <link rel="stylesheet" href="style.css" />
-    <script defer src="again.js"></script>
+    <script defer type="module" src="script.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="header">
         <div class="header__title">
           <span>Welcome back,</span>
-          <span class="header__title--user-name">Abid</span>
+          <span class="header__title--user-name"></span>
         </div>
 
         <div class="header__logo">
@@ -48,28 +48,14 @@
         <div class="app__header">
           <div class="app__header--title">
             <p>Current Balance</p>
-            <p class="app__header--date">As of 05/03/2037</p>
+            <p class="app__header--date balance__date"></p>
           </div>
-          <div class="app__header--balance">3840 &euro;</div>
+          <div class="app__header--balance label--balance"></div>
         </div>
 
         <section class="left-section">
-          <ul class="movements">
-            <li class="movements__row">
-              <div class="movement__type movement__type--deposit">
-                2 deposit
-              </div>
-              <div class="movement__date">3 DAYS AGO</div>
-              <div class="movement__value">4 000 €</div>
-            </li>
-            <li class="movements__row">
-              <div class="movement__type movement__type--withdrawal">
-                2 withdrawal
-              </div>
-              <div class="movement__date">24/01/2037</div>
-              <div class="movement__value">-378€</div>
-            </li>
-          </ul>
+          <!-- Movements -->
+          <ul class="movements"></ul>
         </section>
 
         <section class="right-section">
@@ -77,8 +63,14 @@
             <div class="operation operation--tansfer">
               <p class="operation__title">Transfer money</p>
               <form class="operation__form form--transfer">
-                <input type="text" class="operation__input" />
-                <input type="text" class="operation__input" />
+                <input
+                  type="text"
+                  class="operation__input input__transfer-to"
+                />
+                <input
+                  type="text"
+                  class="operation__input input__transfer--amount"
+                />
 
                 <span class="form__label label-1">Transfer to</span>
                 <span class="form__label label-2">Amount</span>
@@ -90,7 +82,10 @@
             <div class="operation operation--loan">
               <p class="operation__title">Request loan</p>
               <form class="operation__form form--loan">
-                <input type="text" class="operation__input" />
+                <input
+                  type="text"
+                  class="operation__input input__loan-amount"
+                />
 
                 <span class="form__label label-1">Amount</span>
 
@@ -101,8 +96,8 @@
             <div class="operation operation--close">
               <p class="operation__title">Close account</p>
               <form class="operation__form form--close">
-                <input type="text" class="operation__input" />
-                <input type="text" class="operation__input" />
+                <input type="text" class="operation__input input__close-user" />
+                <input type="text" class="operation__input input__close-pin" />
 
                 <span class="form__label label-1">Confirm user</span>
                 <span class="form__label label-2">Confirm pin</span>
@@ -115,13 +110,13 @@
 
         <section class="summary">
           <p class="summary__label">in</p>
-          <p class="summary__value summary__value--in">0000 &euro;</p>
+          <p class="summary__value summary__value--in"></p>
 
           <p class="summary__label">out</p>
-          <p class="summary__value summary__value--out">0000 &euro;</p>
+          <p class="summary__value summary__value--out"></p>
 
           <p class="summary__label">interest</p>
-          <p class="summary__value summary__value--interest">0000 &euro;</p>
+          <p class="summary__value summary__value--interest"></p>
 
           <button class="btn--sort">↓ sort</button>
         </section>
