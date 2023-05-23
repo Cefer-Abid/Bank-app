@@ -1,6 +1,24 @@
+import { TIMER_MIN, TIMER_SEC } from "./config.js";
+import { startTimer, displayTimer } from "./helperFunctions.js";
 import { account1, account2 } from "./src/data.js";
 const accounts = [account1, account2];
 
+//
+//
+//
+//
+//
+//  Problem: timer 1 saniye gec baslayir
+//
+//
+//
+//
+//
+//
+//
+//
+
+//
 const movementsContainer = document.querySelector(".movements");
 const labelBalance = document.querySelector(".label--balance");
 const labelSumIn = document.querySelector(".summary__value--in");
@@ -9,51 +27,23 @@ const labelSumInterest = document.querySelector(".summary__value--interest");
 const btnLogin = document.querySelector(".btn-login");
 const inputLoginUsername = document.querySelector(".login--user-name");
 const inputLoginPin = document.querySelector(".login--user-pin");
-const labelWelcome = document.querySelector(".header__title--user-name");
+const labelWelcome = document.querySelector(".welcome");
 const containerApp = document.querySelector(".app");
-const btnTransfer = document.querySelector(".form--transfer");
+const formTransfer = document.querySelector(".form--transfer");
 const inputTransferAmount = document.querySelector(".input__transfer--amount");
 const inputTransferTo = document.querySelector(".input__transfer-to");
-const btnClose = document.querySelector(".form--close");
+const formClose = document.querySelector(".form--close");
 const inputClosePin = document.querySelector(".input__close-pin");
 const inputCloseUsername = document.querySelector(".input__close-user");
-const btnLoan = document.querySelector(".form--loan");
+const formLoan = document.querySelector(".form--loan");
 const inputLoanAmount = document.querySelector(".input__loan-amount");
 const btrSort = document.querySelector(".btn--sort");
 const labelDate = document.querySelector(".balance__date");
-const timerEl = document.querySelector(".logout--timer");
 
-// Function
+// -----------------------------------------------------------------------
+let logoutAfter, controlTimerLabel;
 
-//////////////////////////////////////////////////
-// Time Function
-let timer, timerFinish, minut, second;
-const initTime = function () {
-  timer;
-  timerFinish = false;
-  minut = 5;
-  second = 0;
-  timerEl.textContent =
-    `${minut}`.padStart(2, "0") + ":" + `${second}`.padStart(2, "0");
-};
-initTime();
-
-const startTime = function () {
-  if (second === 0 && minut === 0) {
-    containerApp.style.opacity = 0;
-    clearInterval(timer);
-    return (timerFinish = true);
-  } else if (second === 0) {
-    minut--;
-    second = 60;
-  }
-
-  second--;
-  timerEl.textContent =
-    `${minut}`.padStart(2, "0") + ":" + `${second}`.padStart(2, "0");
-};
-// Time Function
-//////////////////////////////////////////////////
+// -----------------------------------------------------------------------
 
 const formatCur = function (acc, display) {
   return new Intl.NumberFormat(acc.locale, {
@@ -159,16 +149,17 @@ const updateUI = function (acc) {
 let currentAccount;
 
 btnLogin.addEventListener("click", function (e) {
-  console.log("ok");
   e.preventDefault();
 
   currentAccount = accounts.find(
-    (acc) => acc.username === inputLoginUsername.value
+    (acc) => acc.username === inputLoginUsername.value.trim()
   );
 
   if (currentAccount?.pin === +inputLoginPin.value) {
     // Display UI and message
-    labelWelcome.textContent = currentAccount.owner.split(" ")[0];
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }`;
     containerApp.style.opacity = 100;
 
     // Date and time
@@ -198,15 +189,19 @@ btnLogin.addEventListener("click", function (e) {
     inputLoginPin.blur();
 
     // Timer
-    if (timerFinish) initTime();
-    timer = setInterval(startTime, 1000);
+    if (logoutAfter && controlTimerLabel) {
+      clearTimeout(logoutAfter);
+      clearInterval(controlTimerLabel);
+    }
+    logoutAfter = startTimer(TIMER_MIN, TIMER_SEC);
+    controlTimerLabel = displayTimer();
 
     updateUI(currentAccount);
   }
 });
 
 // Transfer
-btnTransfer.addEventListener("submit", function (e) {
+formTransfer.addEventListener("submit", function (e) {
   e.preventDefault();
   const amount = +inputTransferAmount.value;
   const receiverAcc = accounts.find(
@@ -230,7 +225,10 @@ btnTransfer.addEventListener("submit", function (e) {
     updateUI(currentAccount);
 
     // Reset timer
-    initTime();
+    clearTimeout(logoutAfter);
+    logoutAfter = startTimer(TIMER_MIN, TIMER_SEC);
+    clearInterval(controlTimerLabel);
+    controlTimerLabel = displayTimer();
 
     // Clear field
     inputTransferAmount.value = inputTransferTo.value = "";
@@ -238,7 +236,7 @@ btnTransfer.addEventListener("submit", function (e) {
   }
 });
 
-btnClose.addEventListener("submit", function (e) {
+formClose.addEventListener("submit", function (e) {
   e.preventDefault();
 
   if (
@@ -259,7 +257,7 @@ btnClose.addEventListener("submit", function (e) {
   }
 });
 
-btnLoan.addEventListener("submit", function (e) {
+formLoan.addEventListener("submit", function (e) {
   e.preventDefault();
   const amount = Math.floor(inputLoanAmount.value);
   if (
@@ -277,7 +275,10 @@ btnLoan.addEventListener("submit", function (e) {
   }
 
   // Reset timer
-  initTime();
+  clearTimeout(logoutAfter);
+  logoutAfter = startTimer(TIMER_MIN, TIMER_SEC);
+  clearInterval(controlTimerLabel);
+  controlTimerLabel = displayTimer();
 
   inputLoanAmount.value = ``;
 });
