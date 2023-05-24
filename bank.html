@@ -11,10 +11,11 @@
       rel="stylesheet"
     />
 
-    <title>Bank app</title>
     <link rel="stylesheet" href="style.css" />
     <script defer type="module" src="script.js"></script>
+    <title>Bank app</title>
   </head>
+
   <body>
     <div class="container">
       <div class="header">
@@ -98,7 +99,10 @@
               <p class="operation__title">Close account</p>
               <form class="operation__form form--close">
                 <input type="text" class="operation__input input__close-user" />
-                <input type="text" class="operation__input input__close-pin" />
+                <input
+                  type="password"
+                  class="operation__input input__close-pin"
+                />
 
                 <span class="form__label label-1">Confirm user</span>
                 <span class="form__label label-2">Confirm pin</span>
