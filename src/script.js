@@ -1,7 +1,7 @@
 // prettier-ignore
 import { startTimer, displayTimer, displayHeaderDate, formatCur, formatMovementDate, calcDisplayBalance, calcDisplaySummary, displayWelcome} from "./helperFunctions.js";
 import { TIMER_MIN, TIMER_SEC } from "./config.js";
-import { accounts } from "./src/data.js";
+import accounts from "./data.js";
 
 const movementsContainer = document.querySelector(".movements");
 const btnLogin = document.querySelector(".btn-login");
@@ -18,19 +18,22 @@ const formLoan = document.querySelector(".form--loan");
 const inputLoanAmount = document.querySelector(".input__loan-amount");
 const btrSort = document.querySelector(".btn--sort");
 
-let currentAccount, logoutAfter, timerLabel, controlHeaderDate;
-let sorted = false;
-
-
+const state = {
+  currentAccount: {},
+  logoutAfter: {},
+  timerLabel: {},
+  controlHeaderDate: {},
+  sorted: false,
+};
 
 // Update Timer
 const updateTimer = () => {
-  if (logoutAfter && timerLabel) {
-    clearTimeout(logoutAfter);
-    clearInterval(timerLabel);
+  if (state.logoutAfter && state.timerLabel) {
+    clearTimeout(state.logoutAfter);
+    clearInterval(state.timerLabel);
   }
-  timerLabel = displayTimer();
-  logoutAfter = startTimer(TIMER_MIN, TIMER_SEC);
+  state.timerLabel = displayTimer();
+  state.logoutAfter = startTimer(TIMER_MIN, TIMER_SEC);
 };
 
 // DISPLAY MOVUMENT
@@ -85,19 +88,19 @@ const updateUI = function (acc) {
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
 
-  currentAccount = accounts.find(
+  state.currentAccount = accounts.find(
     (acc) => acc.username === inputLoginUsername.value.trim()
   );
 
-  if (currentAccount?.pin !== +inputLoginPin.value) return;
+  if (state.currentAccount?.pin !== +inputLoginPin.value) return;
   // Display UI and message
-  displayWelcome(`Welcome back, ${currentAccount.owner.split(" ")[0]}`);
+  displayWelcome(`Welcome back, ${state.currentAccount.owner.split(" ")[0]}`);
 
   containerApp.style.opacity = 100;
 
   // Date and time
-  controlHeaderDate && clearInterval(controlHeaderDate);
-  controlHeaderDate = displayHeaderDate(currentAccount.locale);
+  state.controlHeaderDate && clearInterval(state.controlHeaderDate);
+  state.controlHeaderDate = displayHeaderDate(state.currentAccount.locale);
 
   // Clear field
   inputLoginUsername.value = inputLoginPin.value = "";
@@ -106,7 +109,7 @@ btnLogin.addEventListener("click", function (e) {
   // Timer
   updateTimer();
 
-  updateUI(currentAccount);
+  updateUI(state.currentAccount);
 });
 
 // Transfer
@@ -121,18 +124,18 @@ formTransfer.addEventListener("submit", function (e) {
   if (
     amount > 0 &&
     receiverAcc &&
-    amount <= currentAccount.balance &&
-    receiverAcc?.username !== currentAccount.username
+    amount <= state.currentAccount.balance &&
+    receiverAcc?.username !== state.currentAccount.username
   ) {
-    currentAccount.movements.push(-amount);
+    state.currentAccount.movements.push(-amount);
     receiverAcc.movements.push(amount);
 
     // Add transfer Date
     receiverAcc.movementsDates.push(new Date().toISOString());
-    currentAccount.movementsDates.push(new Date().toISOString());
+    state.currentAccount.movementsDates.push(new Date().toISOString());
 
     // updateUI
-    updateUI(currentAccount);
+    updateUI(state.currentAccount);
 
     // Reset timer
     updateTimer();
@@ -147,11 +150,11 @@ formClose.addEventListener("submit", function (e) {
   e.preventDefault();
 
   if (
-    +inputClosePin.value === currentAccount.pin &&
-    inputCloseUsername.value === currentAccount.username
+    +inputClosePin.value === state.currentAccount.pin &&
+    inputCloseUsername.value === state.currentAccount.username
   ) {
     const index = accounts.findIndex(
-      (acc) => acc.username === currentAccount.username
+      (acc) => acc.username === state.currentAccount.username
     );
 
     accounts.splice(index, 1);
@@ -169,16 +172,16 @@ formLoan.addEventListener("submit", function (e) {
 
   const amount = Math.floor(inputLoanAmount.value);
   if (
-    currentAccount.movements.some((mov) => mov >= amount * 0.1) &&
+    state.currentAccount.movements.some((mov) => mov >= amount * 0.1) &&
     amount > 0
   ) {
     setTimeout(function () {
-      currentAccount.movements.push(amount);
+      state.currentAccount.movements.push(amount);
 
       // Add loan Date
-      currentAccount.movementsDates.push(new Date().toISOString());
+      state.currentAccount.movementsDates.push(new Date().toISOString());
 
-      updateUI(currentAccount);
+      updateUI(state.currentAccount);
     }, 2500);
   }
 
@@ -190,6 +193,6 @@ formLoan.addEventListener("submit", function (e) {
 
 // Sort
 btrSort.addEventListener("click", function () {
-  sorted = !sorted;
-  displayMovements(currentAccount, sorted);
+  state.sorted = !state.sorted;
+  displayMovements(state.currentAccount, state.sorted);
 });
